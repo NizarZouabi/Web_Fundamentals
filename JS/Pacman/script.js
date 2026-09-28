@@ -73,8 +73,25 @@ function displayMap() {
     m.innerHTML = output
 }
 
-const offSetX = 519
-const offSetY = 250
+let offSetX = 523
+let offSetY = 250
+
+function updateOffSet() {
+    if (window.matchMedia("(max-width: 1080px)").matches) {
+        offSetY = 250
+        offSetX = 42
+    } else {
+        offSetX = 523
+        offSetY = 250
+    }
+
+    displayPacman();
+    displayGhost();
+}
+
+window.addEventListener('resize', updateOffSet)
+
+updateOffSet()
 
 function displayPacman() {
     document.getElementById('pac-man').style.top = (pacman.y * 24 + offSetY) + "px";
@@ -131,29 +148,78 @@ document.onkeydown = function(e) {
 
 let prevRand = null
 
+let dist = Math.sqrt((ghost.x - pacman.x)**2 + (ghost.y - pacman.y)**2)
+    console.log(Math.round(dist))
+
 function ghostmovement() {
-    
     let directions = ["right", "left", "up", "down"];
     let rand = Math.floor(Math.random() * directions.length);
 
     let newX = ghost.x;
     let newY = ghost.y;
-    
-    
-    if (directions[rand] === "right" && map[ghost.y][ghost.x + 1] != 2) {
-        newX++;
-    } else if (directions[rand] === "left" && map[ghost.y][ghost.x - 1] != 2) {
-        newX--;
-    } else if (directions[rand] === "down" && map[ghost.y + 1][ghost.x] != 2) {
-        newY++;
-    } else if (directions[rand] === "up" && map[ghost.y - 1][ghost.x] != 2) {
-        newY--;
-    }
 
-    let dist = Math.sqrt((ghost.x - pacman.x)**2 + (ghost.y - pacman.y)**2)
-    console.log(Math.round(dist))
+    let canMoveUp = map[ghost.y + 1][ghost.x] !== 2
+    let canMoveDown = map[ghost.y - 1][ghost.x] !== 2
+    let canMoveRight = map[ghost.y][ghost.x + 1] !== 2
+    let canMoveLeft = map[ghost.y][ghost.x - 1] !== 2
+    
+    switch(directions[rand]){
+        case "right":
+            if(canMoveRight){
+                newX++
+            }
+            else if (canMoveLeft){
+                newX--
+            }
+            else if (canMoveUp){
+                newY++
+            }
+            else if (canMoveDown){
+                newY--
+            }
+            break;
 
-    if(ghost.x + ghost.y === pacman.x + pacman.y){
+        case "left":
+            if(canMoveLeft){
+                newX--
+            } else if(canMoveRight){
+                newX++
+            } else if(canMoveUp){
+                newY++
+            } else if(canMoveDown){
+                newY--
+            }
+            break;
+
+        case "down":
+            if(canMoveDown){
+                newY--
+            } else if(canMoveUp){
+                newY++
+            } else if(canMoveRight){
+                newX++
+            } else if(canMoveLeft){
+                newX--
+            }
+            break;
+
+        case "up":
+            if(canMoveUp){
+                newY++
+            } else if(canMoveDown){
+                newY--
+            } else if(canMoveRight){
+                newX++
+            } else if(canMoveLeft){
+                newX--
+            }
+            break;
+
+        default:
+            break;
+        }
+
+    if(ghost.x === pacman.x && ghost.y === pacman.y){
         
         if(score.highest < score.current){
             score.highest = score.current

@@ -22,7 +22,7 @@ body{
 }
 
 .brick{
-    background-color: blue;
+    background-color: green;
 }
 
 .coin{
@@ -54,8 +54,8 @@ body{
     justify-content: center;
     width: 100px;
     color:goldenrod;
-    border: cyan solid 1px;
-    background: blue;
+    border: yellow solid 1px;
+    background: purple;
     font-weight: bold;
 }
 
